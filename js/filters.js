@@ -1,26 +1,33 @@
 import { debounce, shuffleArray } from './util.js';
 import { renderThumbnails, removePictures } from './thumbnail.js';
-import { photos } from './main.js';
 
 const COUNT_OF_FILTER = 10;
 const ACTIVE_CLASS = 'img-filters__button--active';
+
+let currentPhotos = [];
 
 const imgFilters = document.querySelector('.img-filters');
 const imgFiltersForm = imgFilters.querySelector('.img-filters__form');
 
 const availableFilters = {
-  'filter-default': () => photos.slice(),
-  'filter-random': () => shuffleArray(photos.slice(0, COUNT_OF_FILTER)),
-  'filter-discussed': () => photos.slice().sort((firstElement, secondElement) => secondElement.comments.length - firstElement.comments.length),
+  'filter-default': (photos) => photos.slice(),
+  'filter-random': (photos) => shuffleArray(photos.slice()).slice(0, COUNT_OF_FILTER),
+  'filter-discussed': (photos) => photos.slice().sort((firstElement, secondElement) =>
+    secondElement.comments.length - firstElement.comments.length),
 };
 
 const isButton = (evt) => evt.target.tagName === 'BUTTON';
 
 const onImgFiltersFormClick = debounce((evt) => {
   if (isButton(evt)) {
-    removePictures();
+    const filterId = evt.target.id;
+    const filterFunction = availableFilters[filterId];
 
-    renderThumbnails(availableFilters[evt.target.id]());
+    if (filterFunction) {
+      const filteredPhotos = filterFunction(currentPhotos);
+      removePictures();
+      renderThumbnails(filteredPhotos);
+    }
   }
 });
 
@@ -36,7 +43,10 @@ const onButtonClick = (evt) => {
   }
 };
 
-imgFiltersForm.addEventListener('click', onImgFiltersFormClick);
+const initFilters = (photos) => {
+  currentPhotos = photos.slice();
 
-imgFiltersForm.addEventListener('click', onButtonClick);
-
+  imgFiltersForm.addEventListener('click', onImgFiltersFormClick);
+  imgFiltersForm.addEventListener('click', onButtonClick);
+};
+export { initFilters };
