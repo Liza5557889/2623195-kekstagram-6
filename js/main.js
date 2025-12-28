@@ -1,14 +1,14 @@
-
-import {renderThumbnails} from './thumbnail.js';
+import { renderThumbnails } from './thumbnail.js';
 import { loadData } from './fetch.js';
 import { initUploadForm } from './form.js';
+
 
 let photos = [];
 
 const onSuccess = (data) => {
   photos = data.slice();
   renderThumbnails(data.slice());
-  document.querySelector('.img-filters').classList.remove('img-filters-inactive');
+  document.querySelector('.img-filters').classList.remove('img-filters--inactive');
 };
 
 const onFail = (errorMessage) => {
