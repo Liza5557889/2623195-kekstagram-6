@@ -18,8 +18,9 @@ const createThumbnailElement = (photoData) => {
   return thumbnail;
 };
 
+const picturesContainer = document.querySelector('.pictures');
+
 const renderThumbnails = (photos) => {
-  const picturesContainer = document.querySelector('.pictures');
 
   const fragment = document.createDocumentFragment();
   photos.forEach((photo) => {
@@ -28,4 +29,13 @@ const renderThumbnails = (photos) => {
   picturesContainer.appendChild(fragment);
 };
 
-export {renderThumbnails};
+const clearPhotos = () => {
+  picturesContainer.innerHTML = '';
+};
+
+const removePictures = () => {
+  const pictures = picturesContainer.querySelectorAll('.picture');
+  pictures.forEach((photo) => photo.remove());
+};
+
+export {renderThumbnails, clearPhotos, removePictures};
